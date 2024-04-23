@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title of the document</title>
+  </head>
+  <body>
+    <main>
+      <button id="pay-button" onclick="createCheckoutRequest()">
+      PAY NOW!
+      </button>
+    </main>
+    <script src="https://cdn.cellulant.africa/js/tingg-checkout-library.js"></script>
+    <script>
+      function createCheckoutRequest() {
+         // 1. Create your checkout payload
+         var payload = {
+             customer_first_name: "John",
+             customer_last_name: "Doe",
+             msisdn: "254743126150",
+             account_number: "ref-qwerty",
+             request_amount: "100",
+             merchant_transaction_id: "1234567890",
+             service_code: "<YOUR TINGG SERVICE CODE>",
+             country_code: "KEN",
+             currency_code: "KES",
+             callback_url: "https://webhook.site/...",
+             fail_redirect_url: "https://webhook.site/...",
+             success_redirect_url: "https://webhook.site/.."
+      
+         };
+         
+       	// 2. Encrypt the checkout payload in the server
+         const req = window.fetch('<YOUR ENCRYPTION ENDPOINT>', {
+           method: "POST", 
+           body: JSON.stringify(payload)
+         });
+         
+         if (!req.ok) {
+         	console.log("Request failed. Payload could not be encrypted...");
+           return;
+         }
+         
+         req
+           .then(function (resp) {
+           	 return resp.json()
+         	})
+           .then(function (data) {
+           		window.Tingg.renderCheckout({            
+                 environment: "testing",
+                 checkout_type: "modal",
+                 checkout_url: {
+                   long_url: data.long_url,
+                   short_url: data.short_url
+                 },
+                 onClose: () => {
+                   console.log("Close called!");
+                   window.Tingg.close();
+                 },
+                 onSuccess: (data) => {
+                   console.log("Success", data);
+                 },
+                 onFailed: (data) => {
+                   console.log("Failed", data);
+                 }
+               });
+           }) 
+       }
+    </script>
+  </body>
+</html>
