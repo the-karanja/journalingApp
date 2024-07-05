@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet,Image } from 'react-native';
+import { View, TextInput, Button, StyleSheet } from 'react-native';
 
 const HomeScreen = () => {
   const [username, setUsername] = useState('');
@@ -33,12 +33,7 @@ const HomeScreen = () => {
         value={password}
         secureTextEntry={true} // For password input
       />
-    <Button
-        title="Login"
-        onPress={handleSubmit}
-        buttonStyle={styles.button}
-        containerStyle={styles.buttonContainer}
-      />
+    
     </View>
   );
 };
@@ -64,7 +59,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-    marginTop: 30,
+    marginTop: 10,
   },
   button: {
     backgroundColor: '#3498db', // Custom button color

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet,Image } from 'react-native';
+import { View, TextInput, Button, StyleSheet } from 'react-native';
 
 const HomeScreen = () => {
   const [username, setUsername] = useState('');
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-    marginTop: 30,
+    marginTop: 18.75rem,
   },
   button: {
     backgroundColor: '#3498db', // Custom button color

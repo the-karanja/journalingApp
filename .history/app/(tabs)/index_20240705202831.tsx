@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet,Image } from 'react-native';
+import { View, TextInput, Button, StyleSheet } from 'react-native';
 
 const HomeScreen = () => {
   const [username, setUsername] = useState('');
