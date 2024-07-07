@@ -44,6 +44,28 @@ const connection = mysql.createConnection({
     });
   });
 
+  app.post('/register', (req, res) => {
+    username = req.body.username; // username dump from json data sent to server
+    email = req.body.email; // email dump from json data sent to server
+    password = req.body.password; // password dump from json data sent to server
+
+      // Validate input
+  if (!username || !email || !password) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  // Insert the user data into MySQL
+  const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
+  connection.query(query, [username, email, password], (error, results) => {
+    if (error) {
+      console.error('Error inserting data: ' + error.stack);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(201).json({ message: 'User added successfully', userId: results.insertId });
+  });
+
+  });
+
   
 
 // Start the server
