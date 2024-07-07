@@ -121,6 +121,28 @@ app.post('/journal_entries',isAuthenticated, (req, res) => {
     });
   });
 
+  // Route to update a journal entry
+app.put('/journal_entries/:id', (req, res) => {
+    const entryId = req.params.id;
+    const { title, content, category } = req.body;
+  
+    // Validate input
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Title and content are required' });
+    }
+  
+    // Update journal entry in database
+    const query = 'UPDATE journal_entries SET title=?, content=?, category=? WHERE id=?';
+    connection.query(query, [title, content, category, entryId], (error, results) => {
+      if (error) {
+        console.error('Error updating journal entry in database: ' + error.stack);
+        return res.status(500).json({ error: 'Database error' });
+      }
+  
+      res.status(200).json({ message: 'Journal entry updated successfully' });
+    });
+  });
+
 // Logout Route
 app.post('/logout', (req, res) => {
   req.session.destroy((err) => {
