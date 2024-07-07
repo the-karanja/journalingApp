@@ -66,6 +66,31 @@ const connection = mysql.createConnection({
 
   });
 
+  // Route to handle user login
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+  
+    // Validate input
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
+  
+    // Check credentials in MySQL
+    const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
+    connection.query(query, [username, password], (error, results) => {
+      if (error) {
+        console.error('Error querying database: ' + error.stack);
+        return res.status(500).json({ error: 'Database error' });
+      }
+  
+      if (results.length > 0) {
+        res.status(200).json({ message: 'Login successful', user: results[0] });
+      } else {
+        res.status(401).json({ error: 'Invalid username or password' });
+      }
+    });
+  });
+
   
 
 // Start the server
