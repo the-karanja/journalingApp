@@ -28,7 +28,7 @@ export default function TabLayout() {
         options={{
           title: 'Register',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'key' : 'key'} color={color} />
+            <TabBarIcon name={focused ? 'key' : 'key-outlined'} color={color} />
           ),
         }}
       />

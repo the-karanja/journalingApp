@@ -1,22 +1,15 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet,Image,Alert } from 'react-native';
+import { View, TextInput, Button, StyleSheet,Image } from 'react-native';
 
 const TabTwoScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showNotification, setShowNotification] = useState(true);
 
-  const handleDismiss = () => {
-    setShowNotification(false);
-  };
   const handleUsernameChange = (text) => {
     setUsername(text);
   };
 
   const handlePasswordChange = (text) => {
-    setPassword(text);
-  };
-  const handleEmailChange = (text) => {
     setPassword(text);
   };
 
