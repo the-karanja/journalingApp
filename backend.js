@@ -1,99 +1,115 @@
 const express = require('express');
+const mysql = require('mysql');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
-const axios = require('axios');
-const jwt = require('jsonwebtoken');
-const path = require('path');
-const cors = require("cors");
-const mysql = require('mysql');  
-const Encryption = require('./Encryption');
-require('dotenv').config(); // Load .env variables
 
 const app = express();
-const port = 3000;
+app.use(bodyParser.json());
 
-
-app.use(cors())
-// enable parsing application/json
-app.use(express.json());
-
+const secretKey = 'your_secret_key'; // Replace with your secret key
 
 // MySQL Connection
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root', // Replace with your MySQL username
-    password: '', // Replace with your MySQL password
-    database: 'transactions', // Replace with your database name
-  });
-  
-  connection.connect((err) => {
-    if (err) {
-      console.error('Error connecting to MySQL database: ' + err.stack);
-      return;
-    }
-    console.log('Connected to MySQL database as ID ' + connection.threadId);
-  });
-  
-  // Example route to test MySQL connection
-  app.get('/', (req, res) => {
-    connection.query('SELECT * FROM banktransactions', (error, results) => {
-      if (error) {
-        res.status(500).json({ error: 'Error querying database' });
-        return;
-      }
-      res.json(results);
-    });
-  });
+  host: 'localhost',
+  user: 'root', // Replace with your MySQL username
+  password: '', // Replace with your MySQL password
+  database: 'transactions', // Replace with your database name
+});
 
-  app.post('/register', (req, res) => {
-    username = req.body.username; // username dump from json data sent to server
-    email = req.body.email; // email dump from json data sent to server
-    password = req.body.password; // password dump from json data sent to server
+connection.connect((err) => {
+  if (err) {
+    console.error('Error connecting to MySQL database: ' + err.stack);
+    return;
+  }
+  console.log('Connected to MySQL database as ID ' + connection.threadId);
+});
 
-      // Validate input
+// Session Configuration
+app.use(session({
+  secret: secretKey,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60000 } // 1 minute for demonstration
+}));
+
+// Registration Route
+app.post('/register', async (req, res) => {
+  const { username, email, password } = req.body;
+
+  // Validate input
   if (!username || !email || !password) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  // Insert the user data into MySQL
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Insert user into database
   const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
-  connection.query(query, [username, email, password], (error, results) => {
+  connection.query(query, [username, email, hashedPassword], (error, results) => {
     if (error) {
-      console.error('Error inserting data: ' + error.stack);
+      console.error('Error inserting user into database: ' + error.stack);
       return res.status(500).json({ error: 'Database error' });
     }
-    res.status(201).json({ message: 'User added successfully', userId: results.insertId });
-  });
 
+    res.status(201).json({ message: 'User registered successfully' });
   });
+});
 
-  // Route to handle user login
+// Login Route
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-  
-    // Validate input
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required' });
+  const { username, password } = req.body;
+
+  // Validate input
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required' });
+  }
+
+  // Check credentials in MySQL
+  const query = 'SELECT * FROM users WHERE username = ?';
+  connection.query(query, [username], async (error, results) => {
+    if (error) {
+      console.error('Error querying database: ' + error.stack);
+      return res.status(500).json({ error: 'Database error' });
     }
-  
-    // Check credentials in MySQL
-    const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    connection.query(query, [username, password], (error, results) => {
-      if (error) {
-        console.error('Error querying database: ' + error.stack);
-        return res.status(500).json({ error: 'Database errors' });
-      }
-  
-      if (results.length > 0) {
-        res.status(200).json({ message: 'Login successful', user: results[0] });
-      } else {
-        res.status(401).json({ error: 'Invalid username or password' });
-      }
-    });
+
+    if (results.length === 0 || !(await bcrypt.compare(password, results[0].password))) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+
+    // Store user information in session
+    req.session.userId = results[0].id;
+    req.session.username = results[0].username;
+
+    res.status(200).json({ message: 'Login successful' });
   });
+});
 
-  
+// Middleware to check if user is authenticated
+function isAuthenticated(req, res, next) {
+  if (req.session.userId) {
+    return next();
+  }
+  res.status(401).json({ error: 'Unauthorized' });
+}
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is listening at http://localhost:${port}`);
+// Protected Route Example
+app.get('/dashboard', isAuthenticated, (req, res) => {
+  res.status(200).json({ message: `Welcome ${req.session.username}!` });
+});
+
+// Logout Route
+app.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to log out' });
+    }
+    res.status(200).json({ message: 'Logout successful' });
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
