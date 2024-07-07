@@ -35,10 +35,10 @@ app.use(session({
 
 // Registration Route
 app.post('/register', async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password,names } = req.body;
 
   // Validate input
-  if (!username || !email || !password) {
+  if (!username || !email || !password|| names) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
@@ -46,7 +46,7 @@ app.post('/register', async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Insert user into database
-  const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
+  const query = 'INSERT INTO users (username, email, password,names) VALUES (?, ?, ?,?)';
   connection.query(query, [username, email, hashedPassword], (error, results) => {
     if (error) {
       console.error('Error inserting user into database: ' + error.stack);
