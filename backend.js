@@ -86,6 +86,27 @@ app.post('/login', (req, res) => {
   });
 });
 
+// this endpoint is used to post data from the app to mysql database
+app.post('/journal_entries', (req, res) => {
+    const { title, content, category } = req.body;
+  
+    // Validate input
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Title and content are required' });
+    }
+  
+    // Insert journal entry into database
+    const query = 'INSERT INTO journal_entries (title, content, category) VALUES (?, ?, ?)';
+    connection.query(query, [title, content, category], (error, results) => {
+      if (error) {
+        console.error('Error inserting journal entry into database: ' + error.stack);
+        return res.status(500).json({ error: 'Database error' });
+      }
+  
+      res.status(201).json({ message: 'Journal entry created successfully', entryId: results.insertId });
+    });
+  });
+
 // Middleware to check if user is authenticated
 function isAuthenticated(req, res, next) {
   if (req.session.userId) {
