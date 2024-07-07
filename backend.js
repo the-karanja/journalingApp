@@ -86,8 +86,22 @@ app.post('/login', (req, res) => {
   });
 });
 
+
+// Middleware to check if user is authenticated
+function isAuthenticated(req, res, next) {
+  if (req.session.userId) {
+    return next();
+  }
+  res.status(401).json({ error: 'Unauthorized' });
+}
+
+// Protected Route Example
+app.get('/dashboard', isAuthenticated, (req, res) => {
+  res.status(200).json({ message: `Welcome ${req.session.username}!` });
+});
+
 // this endpoint is used to post data from the app to mysql database
-app.post('/journal_entries', (req, res) => {
+app.post('/journal_entries',isAuthenticated, (req, res) => {
     const { title, content, category } = req.body;
   
     // Validate input
@@ -106,19 +120,6 @@ app.post('/journal_entries', (req, res) => {
       res.status(201).json({ message: 'Journal entry created successfully', entryId: results.insertId });
     });
   });
-
-// Middleware to check if user is authenticated
-function isAuthenticated(req, res, next) {
-  if (req.session.userId) {
-    return next();
-  }
-  res.status(401).json({ error: 'Unauthorized' });
-}
-
-// Protected Route Example
-app.get('/dashboard', isAuthenticated, (req, res) => {
-  res.status(200).json({ message: `Welcome ${req.session.username}!` });
-});
 
 // Logout Route
 app.post('/logout', (req, res) => {
