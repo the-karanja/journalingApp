@@ -20,7 +20,6 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-       <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
       <TextInput
         style={styles.input}
         placeholder="Username"
