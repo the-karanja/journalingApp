@@ -17,6 +17,35 @@ app.use(cors())
 app.use(express.json());
 
 
+// MySQL Connection
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root', // Replace with your MySQL username
+    password: '', // Replace with your MySQL password
+    database: 'transactions', // Replace with your database name
+  });
+  
+  connection.connect((err) => {
+    if (err) {
+      console.error('Error connecting to MySQL database: ' + err.stack);
+      return;
+    }
+    console.log('Connected to MySQL database as ID ' + connection.threadId);
+  });
+  
+  // Example route to test MySQL connection
+  app.get('/', (req, res) => {
+    connection.query('SELECT * FROM banktransactions', (error, results) => {
+      if (error) {
+        res.status(500).json({ error: 'Error querying database' });
+        return;
+      }
+      res.json(results);
+    });
+  });
+
+  
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server is listening at http://localhost:${port}`);
