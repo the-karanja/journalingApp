@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
 
-const secretKey = 'your_secret_key'; // Replace with your secret key
+const secretKey = 'journaling2024'; // Replace with your secret key
 
 // MySQL Connection
 const connection = mysql.createConnection({
