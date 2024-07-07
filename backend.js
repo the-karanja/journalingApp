@@ -80,7 +80,7 @@ app.post('/login', (req, res) => {
     connection.query(query, [username, password], (error, results) => {
       if (error) {
         console.error('Error querying database: ' + error.stack);
-        return res.status(500).json({ error: 'Database error' });
+        return res.status(500).json({ error: 'Database errors' });
       }
   
       if (results.length > 0) {
