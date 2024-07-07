@@ -122,7 +122,7 @@ app.post('/journal_entries',isAuthenticated, (req, res) => {
   });
 
   // Route to update a journal entry
-app.put('/journal_entries/:id', (req, res) => {
+app.put('/journal_entries/:id',isAuthenticated, (req, res) => {
     const entryId = req.params.id;
     const { title, content, category } = req.body;
   
@@ -140,6 +140,22 @@ app.put('/journal_entries/:id', (req, res) => {
       }
   
       res.status(200).json({ message: 'Journal entry updated successfully' });
+    });
+  });
+
+  // Route to delete a journal entry
+app.delete('/journal_entries/:id', (req, res) => {
+    const entryId = req.params.id;
+  
+    // Delete journal entry from database
+    const query = 'DELETE FROM journal_entries WHERE id=?';
+    connection.query(query, [entryId], (error, results) => {
+      if (error) {
+        console.error('Error deleting journal entry from database: ' + error.stack);
+        return res.status(500).json({ error: 'Database error' });
+      }
+  
+      res.status(200).json({ message: 'Journal entry deleted successfully' });
     });
   });
 
