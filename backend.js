@@ -159,6 +159,28 @@ app.delete('/journal_entries/:id', (req, res) => {
     });
   });
 
+  // Route to update usersusername and password
+app.put('/profile/:userId', (req, res) => {
+    const userId = req.params.userId;
+    const { username, password } = req.body;
+  
+    // Validate input
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
+  
+    // Update username and password in database
+    const query = 'UPDATE users SET username=?, password=? WHERE id=?';
+    connection.query(query, [username, password, userId], (error, results) => {
+      if (error) {
+        console.error('Error updating username and password in database: ' + error.stack);
+        return res.status(500).json({ error: 'Database error' });
+      }
+  
+      res.status(200).json({ message: 'Username and password updated successfully' });
+    });
+  });
+
 // Logout Route
 app.post('/logout', (req, res) => {
   req.session.destroy((err) => {
