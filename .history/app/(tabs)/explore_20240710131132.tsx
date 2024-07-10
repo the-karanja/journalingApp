@@ -21,13 +21,13 @@ const TabTwoScreen = () => {
   };
 
   const handleSubmit = () => {
-    //console.log(`Username: ${username}, Password: ${password}`);
+    console.log(`Username: ${username}, Password: ${password}`);
     const data = {
       username: username,
       password: password,
     };
   
-    //console.log(`Username: ${username}, Password: ${password}`);
+    console.log(`Username: ${username}, Password: ${password}`);
   
     axios.post('https://2127-197-254-120-202.ngrok-free.app/test', data)
       .then(response => {
