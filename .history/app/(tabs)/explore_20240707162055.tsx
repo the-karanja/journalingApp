@@ -32,7 +32,9 @@ const TabTwoScreen = () => {
        {showNotification && (
         <View style={styles.notification}>
           <Text style={styles.notificationText}>Welcome! Please register to get started and start Journaling</Text>
-      
+          <TouchableOpacity onPress={handleDismiss} style={styles.dismissButton}>
+            <Text style={styles.dismissButtonText}>Dismiss</Text>
+          </TouchableOpacity>
         </View>
       )}
       <TextInput

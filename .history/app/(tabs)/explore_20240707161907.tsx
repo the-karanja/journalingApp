@@ -32,7 +32,9 @@ const TabTwoScreen = () => {
        {showNotification && (
         <View style={styles.notification}>
           <Text style={styles.notificationText}>Welcome! Please register to get started and start Journaling</Text>
-      
+          {/* <TouchableOpacity onPress={handleDismiss} style={styles.dismissButton}>
+            <Text style={styles.dismissButtonText}>Dismiss</Text>
+          </TouchableOpacity> */}
         </View>
       )}
       <TextInput
@@ -104,6 +106,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
+    color: colorScheme === 'dark' ? '#39FF14' : '#000',
+    backgroundColor: colorScheme === 'dark' ? '#2d3436' : '#fff',
   },
   loginButton: {
     color: 'red'

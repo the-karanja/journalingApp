@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet,Image,Alert ,TouchableOpacity,Text} from 'react-native';
+import { View, TextInput, Button, StyleSheet,Image,Alert } from 'react-native';
 
 const TabTwoScreen = () => {
   const [username, setUsername] = useState('');
@@ -31,8 +31,10 @@ const TabTwoScreen = () => {
        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
        {showNotification && (
         <View style={styles.notification}>
-          <Text style={styles.notificationText}>Welcome! Please register to get started and start Journaling</Text>
-      
+          <Text style={styles.notificationText}>Welcome! Please register to get started.</Text>
+          <TouchableOpacity onPress={handleDismiss} style={styles.dismissButton}>
+            <Text style={styles.dismissButtonText}>Dismiss</Text>
+          </TouchableOpacity>
         </View>
       )}
       <TextInput

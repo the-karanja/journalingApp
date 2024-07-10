@@ -31,8 +31,10 @@ const TabTwoScreen = () => {
        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
        {showNotification && (
         <View style={styles.notification}>
-          <Text style={styles.notificationText}>Welcome! Please register to get started and start Journaling</Text>
-      
+          <Text style={styles.notificationText}>Welcome! Please register to get started.</Text>
+          <TouchableOpacity onPress={handleDismiss} style={styles.dismissButton}>
+            <Text style={styles.dismissButtonText}>Dismiss</Text>
+          </TouchableOpacity>
         </View>
       )}
       <TextInput
@@ -67,7 +69,7 @@ const TabTwoScreen = () => {
 
 const styles = StyleSheet.create({
   notification: {
-    backgroundColor: '#e0f7fa',
+    backgroundColor: 'success',
     borderColor: '#b2ebf2',
     borderWidth: 1,
     padding: 10,
