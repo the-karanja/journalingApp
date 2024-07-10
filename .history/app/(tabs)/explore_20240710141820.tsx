@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Image, Alert, Text } from 'react-native';
+import { View, TextInput, Button, StyleSheet,Image,Alert ,TouchableOpacity,Text} from 'react-native';
 import axios from 'axios';
-
 const TabTwoScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [names, setNames] = useState('');
+  const [email, setemail] = useState('');
+  const [names, setnames] = useState('');
   const [showNotification, setShowNotification] = useState(true);
 
-  const handleUsernameChange = (text) => setUsername(text);
-  const handlePasswordChange = (text) => setPassword(text);
-  const handleEmailChange = (text) => setEmail(text);
-  const handleNamesChange = (text) => setNames(text);
+  const handleDismiss = () => {
+    setShowNotification(false);
+  };
+  const handleUsernameChange = (text) => {
+    setUsername(text);
+  };
+
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+  };
+  const handleEmailChange = (text) => {
+    setemail(text);
+  };
+  const handleNamesChange = (text) => {
+    setnames(text);
+  };
 
   const handleSubmit = () => {
     const data = {
@@ -21,26 +32,28 @@ const TabTwoScreen = () => {
       password: password,
       names: names,
     };
-
+  
     console.log(`Username: ${username}, Email: ${email}, Password: ${password}, Names: ${names}`);
-
+  
     axios.post('https://2127-197-254-120-202.ngrok-free.app/register', data)
       .then(response => {
         console.log('Response:', response.data);
-        Alert.alert('Success', 'User registered successfully!');
+        // Handle successful response
       })
       .catch(error => {
         console.error('There was an error!', error);
-        Alert.alert('Error', 'There was an error registering the user.');
+        // Handle error
       });
   };
 
   return (
     <View style={styles.container}>
-      <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-      {showNotification && (
+      
+       <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
+       {showNotification && (
         <View style={styles.notification}>
-          <Text style={styles.notificationText}>Welcome! Please register to get started and start journaling.</Text>
+          <Text style={styles.notificationText}>Welcome! Please register to get started and start Journaling</Text>
+      
         </View>
       )}
       <TextInput
@@ -49,27 +62,29 @@ const TabTwoScreen = () => {
         onChangeText={handleUsernameChange}
         value={username}
       />
-      <TextInput
+       <TextInput
         style={styles.input}
-        placeholder="Full Name"
+        placeholder="names"
         onChangeText={handleNamesChange}
         value={names}
+        //secureTextEntry={true} // For password input
       />
-      <TextInput
+        <TextInput
         style={styles.input}
         placeholder="Email"
         onChangeText={handleEmailChange}
         value={email}
-        keyboardType="email-address"
+        //secureTextEntry={true} // For password input
       />
-      <TextInput
+         <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="password"
         onChangeText={handlePasswordChange}
         value={password}
-        secureTextEntry={true}
+        secureTextEntry={true} // For password input
       />
-      <Button
+     
+    <Button
         title="Register"
         onPress={handleSubmit}
         buttonStyle={styles.button}
@@ -95,6 +110,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
   },
+  dismissButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 4,
+  },
+  dismissButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -110,12 +134,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
   },
+  loginButton: {
+    color: 'red'
+  },
   buttonContainer: {
     width: '100%',
     marginTop: 30,
   },
   button: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#3498db', // Custom button color
   },
 });
 
