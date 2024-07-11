@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet,Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@expo/router';
 import axios from 'axios';
 const HomeScreen = () => {
   const [username, setUsername] = useState('');
@@ -13,10 +13,8 @@ const HomeScreen = () => {
   const handlePasswordChange = (text) => {
     setPassword(text);
   };
-  const navigation = useNavigation();
-
   const navigateToSettings = () => {
-    navigation.navigate('SettingsScreen');
+    navigation.navigate('Settings');
   };
   const handleSubmit = () => {
     //console.log(`Username: ${username}, Password: ${password}`);

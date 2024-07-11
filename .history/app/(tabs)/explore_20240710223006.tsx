@@ -24,7 +24,7 @@ const TabTwoScreen = () => {
 
     console.log(`Username: ${username}, Email: ${email}, Password: ${password}, Names: ${names}`);
 
-     axios.post('https://2127-197-254-120-202.ngrok-free.app/register', data)
+    await axios.post('https://2127-197-254-120-202.ngrok-free.app/register', data)
       .then(response => {
         console.log('Response:', response.data);
         Alert.alert('Success', 'User registered successfully!');
